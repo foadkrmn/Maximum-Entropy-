@@ -5,11 +5,11 @@
 clear all;
 clc;
 
-xmin=-2;
-xmax=2;
-dx=0.01;
+xmin=-3;
+xmax=3;
+dx=0.001;
 x=[xmin:dx:xmax];
-mu=[0 0.2 0.05 0.1];
+mu=[0 1 0.2884 1.9006];
 
 mu=mu(:);                    %import mu and make a vector
 x=x(:);                      %make a vector of x
@@ -32,17 +32,15 @@ l0=zeros(M,1);
 Q = @(l) sum(exp(-phmu*l).*dx)
 
 options = optimset('Display','iter','PlotFcns',@optimplotfval);
-lambda = fminsearch(Q,l0,options)  %minimizing potential function to find Lagrangian multiplyers
+lambda = fminsearch(Q,l0,options);  %minimizing potential function to find Lagrangian multiplyers
 
 q = sum(exp(-phmu*lambda).*dx);     %calculate potential value
 
 p=exp(-phmu*lambda)./q;             %generate distribution
 
-lambda0=sum(exp(-phi*lambda).*dx);  %find lambda0, normalizing factor
+lambda0 = log(sum(exp(-(phi*lambda)).*dx));  %find lambda0, normalizing factor
 
 lambda=[lambda0;lambda];
 lambda
 
-plot(p)
-
-    
+plot(x,p)
