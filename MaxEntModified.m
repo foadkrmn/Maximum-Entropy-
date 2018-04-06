@@ -5,7 +5,7 @@
 % In Maximum Entropy and Bayesian Methods (pp. 221-233). Springer, Dordrecht.
 
 % To verify the code, following data can be used based on example provided
-% in paper: if x=[-1:0.01:1], mu=[0 0.3 0 0.15], then independant of
+% in paper: if x=[-1:0.01:1], mu=[0 0.3 0 0.15], then independent of
 % initial value for lambda, final lambda values should be lambda=[0.9392 0
 % -3.3414 0 4.6875].
 clear all;
