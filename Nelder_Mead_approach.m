@@ -1,3 +1,4 @@
+
 % Applying Nelder-Mead method to find Lagrange Multiplyers to generate distribution with hieghst
 % entrpy with constraint. 
 % This code is developed by Foad Karimian.
@@ -7,14 +8,14 @@
 % initial value for lambda, final lambda values should be lambda=[0.9392 0
 % -3.3414 0 4.6875].
 
-clear all;
-clc;
+% clear all;
+% clc;
 
-xmin=-6;
-xmax=6;
+xmin=-5;
+xmax=5;
 dx=0.01;
 x=[xmin:dx:xmax];
-mu=[0 1];
+mu=[0 1 0.2884 1.9006];
 
 mu=mu(:);                    %import mu and make a vector
 x=x(:);                      %make a vector of x
@@ -47,17 +48,29 @@ lambda0 = log(q.*exp(-lambda.'*mu));    %find lambda0, normalizing factor
 
 lambda=-lambda;
 
-lambda=[lambda0;lambda]
-
-figure(1)
-plot(x,pdf)
+lambda=[lambda0;lambda];
 
 cdf=zeros(length(x),1);
-cdf(1)=pdf(1);
+cdf(1)=pdf(1).*dx;
 
 for i=2:length(x)
-    cdf(i)=pdf(i)+cdf(i-1);
+    cdf(i)=pdf(i).*dx+cdf(i-1);     %generate cdf of MaxEnt
 end
 
-figure(2)
+disp("Lagnrangian multiplyers (lambda0, lambda1, ...) are:"); disp(num2str(lambda));
+
+figure(1);          %draw pdf MaxEnt distribution
+plot(x,pdf)
+title('MaxEnt PDF')
+xlabel('Data')
+ylabel('PDF')
+
+
+figure(2);            %draw pdf MaxEnt distribution
 plot(x,cdf)
+title('MaxEnt CDF')
+xlabel('Data')
+ylabel('CDF')
+
+movegui(figure(1),'southwest')      %place figure on lower-left on screen
+movegui(figure(2),'south')      %place figure on lower-center on screen
