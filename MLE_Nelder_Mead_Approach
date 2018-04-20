@@ -286,6 +286,23 @@ end
 
 dg=det(g);
 
+% This Part of code calculates Entropy of each distributions
+
+entnorm = sum(normp.*log(normp).*dx);
+entmaxent = sum(pdfin.*log(pdfin).*dx);
+ent = 0;
+entwei = 0;
+for i=1:length(weipdf)
+    if weipdf(i) == 0
+        ent = ent
+    else
+        ent = weipdf(i).*log(weipdf(i)).*dx; 
+        entwei = entwei + ent;
+    end
+end
+
+
+
 disp('------------------------- Covariance Matrix for distribution parameters -------------------------')
 disp('Covaraince matrix for Lognormal distribution is (mean std):')
 disp(num2str(lcov));
@@ -296,6 +313,11 @@ disp('------------------------- Hessian Matrix for MaxEnt distribution ---------
 disp('Hessian matrix of MaxEnt distribution is (lambda1, lambda2,...): ');
 disp(num2str(g));
 disp(['Determinant of Hessian matrix is: ',num2str(dg)])
+
+disp('------------------------- Entropy of distributions -------------------------')
+disp(['Lognormal: ',num2str(entnorm)])
+disp(['3-Parameter Weibull: ',num2str(entwei)])
+disp(['MaxEnt: ',num2str(entmaxent)])
 
 disp('------------------------- Tail fit and Root Mean Square for distributions -------------------------')
 
