@@ -11,11 +11,11 @@
 % clear all;
 % clc;
 
-xmin=-5;
-xmax=5;
+xmin=-1;
+xmax=1;
 dx=0.01;
 x=[xmin:dx:xmax];
-mu=[0 1 0.2884 1.9006];
+mu=[0 0.3 0 0.15];
 
 mu=mu(:);                    %import mu and make a vector
 x=x(:);                      %make a vector of x
@@ -46,7 +46,7 @@ pdf=exp(-phmu*lambda)./q;             %generate distribution
 
 lambda0 = log(q.*exp(-lambda.'*mu));    %find lambda0, normalizing factor
 
-lambda=-lambda;
+% lambda=-lambda;
 
 lambda=[lambda0;lambda];
 
