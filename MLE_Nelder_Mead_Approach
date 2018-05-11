@@ -6,7 +6,7 @@ clear all;
 clc;
 
 %Actual data in form of Log(cycles) is entered in variable "data"
-data=[4.139438274	4.151001908	4.16708092	4.176091259	4.183269844	4.185627136	4.204119983	4.208629438	4.21181443	4.220500346	4.224610747	4.232767474	4.244598701	4.251540889	4.260071388	4.264227348	4.291435455	4.297760511	4.302698819	4.312600439	4.326724913	4.336299596	4.336299596	4.370235437	4.383222742	4.411619706	4.411922596	4.416640507	4.424881637	4.439932396];
+data=[4.59309	4.60267	4.60935	4.61305	4.62229	4.63658	4.64510	4.65196	4.65437	4.66234	4.66558	4.67099	4.67269	4.67348	4.67689	4.67773	4.70666	4.71135	4.73964	4.75292	4.76105	4.76188	4.78068	4.79673	4.81109	4.81345	4.81351	4.81757	4.83603	4.84056];
 
 Lognorm=mle(data);      %MLE estimation of mean and std
 Lognorm=Lognorm.';      %make a vector of dist. parameters
@@ -14,7 +14,7 @@ Lognorm=Lognorm.';      %make a vector of dist. parameters
 
 xmin=-5.*Lognorm(2)+Lognorm(1);     %set x interval with respect to std, extending from 4*std before mean to 4*std after mean
 xmax=5.*Lognorm(2)+Lognorm(1);
-dx=0.0001;
+dx=0.01;
 x=[xmin:dx:xmax];
 x=x(:);
 
@@ -38,7 +38,7 @@ movegui(figure(4),'north')      %place lognormal cdf on top-center on screen
 
 custpdf = @(x,a,b,c) (x>c).*(b/a).*(((x-c)/a).^(b-1)).*exp(-((x-c)/a).^b);  %PDF for 3-parameter Weibull
 opt = statset('MaxIter',1e5,'MaxFunEvals',1e5,'FunValCheck','off');
-weibull= mle(data,'pdf',custpdf,'start',[0.2 2.4 4],'Options',opt,...       %MLE estimation of parameters
+weibull= mle(data,'pdf',custpdf,'start',[0.2 2.4 3],'Options',opt,...       %MLE estimation of parameters
     'LowerBound',[0 0 -Inf],'UpperBound',[Inf Inf min(data)]);
 
 weibull=weibull.';                  %make a vector of parameters
@@ -180,11 +180,16 @@ figure(7)                                   %Lognormal, weibull and MaxEnt PDF i
 plot(x,normp,':',x,weipdf,'--',x,pdfin)
 title('Lognormal vs 3-p Weibull vs MaxEnt PDF')
 legend('Lognormal','3 Paramter Weibull','MaxEnt')
+xlabel('Log(N)')
+ylabel('PDF')
 
 figure(8)                                   %Lognormal, weibull and MaxEnt CDF in one figure
 plot(x,normc,':',x,weicdf,'--',x,cdfin,data,cdf_data,'s')
 title('Lognormal vs 3-p Weibull vs MaxEnt CDF')
-legend({'Lognormal','3 Parameter Weibull','MaxEnt'},'Location','northwest')
+legend({'Lognormal','3 Parameter Weibull','MaxEnt','Log(cycles)'},'Location','northwest')
+xlabel('Log(N)')
+ylabel('CDF')
+
 
 movegui(figure(7),'northeast')      %place figure on upper-right on screen
 movegui(figure(8),'east')      %place figure on right on screen
@@ -198,11 +203,11 @@ disp(['mean= ',num2str(Lognorm(1)),'      ','std= ',num2str(Lognorm(2))]);      
 disp('MLE parameters for 3-Parameter Weibull distributions are:');
 disp(['alpha= ',num2str(weibull(1)),'      ','beta= ',num2str(weibull(2)),'      ','Log(n0)= ',num2str(weibull(3))]);    %display 3-Parameter Weibull Distribution parameters
  
-disp('------------------------- Lagrangian multipliers for MaxEnt distribution -------------------------');
+disp('------------------------- Lagrange multipliers for MaxEnt distribution -------------------------');
  
-disp('Lagrangian multipliers (lambda0, lambda1, ...) are: ');       %display Lagrangian Multipliers parameters
+disp('Lagrange multipliers (lambda0, lambda1, ...) are: ');       %display Lagrangian Multipliers parameters
 disp(num2str(lambda0));
-disp(num2str(-lambda));
+disp(num2str(lambda));
 
 % This part of the code find r.m.s. of all distributions from data points
 
@@ -294,7 +299,7 @@ ent = 0;
 entwei = 0;
 for i=1:length(weipdf)
     if weipdf(i) == 0
-        ent = ent
+        ent = ent;
     else
         ent = weipdf(i).*log(weipdf(i)).*dx; 
         entwei = entwei + ent;
@@ -390,8 +395,8 @@ if lmin==lnorm
     disp(['MaxEnt is prefered to Lognormal with K value of ',num2str(k(3))]);
 end
 if lmin==lwei
-    disp(['Lognormal is prefered to 3-Parameter Weibull with K value of ',num2str(k(1))]);
-    disp(['MaxEnt is prefered to 3-Parameter Weibull with K value of ',num2str(k(3))]);
+    disp(['Lognormal is preferred to 3-Parameter Weibull with K value of ',num2str(k(1))]);
+    disp(['MaxEnt is preferred to 3-Parameter Weibull with K value of ',num2str(k(3))]);
 end
 if lmin==lmaxent
     disp(['Lognormal is prefered to MaxEnt with K value of ',num2str(k(1))]);
